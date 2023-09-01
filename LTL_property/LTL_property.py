@@ -38,7 +38,6 @@ class LTLProperty(PlanProperty):
 
         # -C complete automaton
         # -s state based acceptance
-        # -D deterministic
         #spot_bin = "/mnt/data_server/eifler/LTL2BA/spot-2.6.3/bin/"
         #spot_bin = "~/Uni/XAI/programms/Spot/spot-2.6.3/bin/"
         spot_bin = os.environ.get("SPOT_BIN_PATH", "/mnt/data_server/eifler/LTL2BA/spot-2.6.3/bin/")
@@ -46,7 +45,7 @@ class LTLProperty(PlanProperty):
         output_file = self.name
         ltl2hoa_path = os.environ.get("LTL2HAO_PATH", "/mnt/data_server/eifler/ltl-mode/ltlfkit/")
         #cmd = spot_bin + "ltlfilt --from-ltlf -f '" + formula + "' | " + spot_bin + "ltl2tgba -B -D -s -C | " + spot_bin + "autfilt --remove-ap=alive -B -D -C -s --small > " + output_file
-        cmd = "python3 " + ltl2hoa_path + "ltlf2hoa.py '" + formula + "' | " + spot_bin + "autfilt --small -C -D -s --spin > " + output_file
+        cmd = "python3 " + ltl2hoa_path + "ltlf2hoa.py '" + formula + "' | " + spot_bin + "autfilt --small -C -s --spin > " + output_file
 
         os.system(cmd)
 
