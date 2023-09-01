@@ -29,20 +29,13 @@ def addChangePhase(sas_task):
     pre_post_change_phase.append((eval_phase_var_id, 0, 1, []))
     sas_task.operators.append(SASOperator("(change_to_evaluation)",[], pre_post_change_phase, 0))
 
-    
-
     return eval_phase_var_id
 
 
-def addPropertySatVariables(sas_task, prop, addToGoal=False):
+def addPropertySatVariables(sas_task, prop):
     # compile property into one (goal) fact 
     #fact that indicates if the property is satisfied at the end of the plan
     prop.var_id = len(sas_task.variables.value_names)
-    # TODO implete separate handling of soft and hard goal identification
-    #soft_prefix = "hard"
-    # if prop.soft:
-    #     soft_prefix = "soft"
-    #prop_vars = [soft_prefix + "_not_sat_" + prop.name, soft_prefix + "_sat_" + prop.name]
     prop_vars = ["not_sat_" + prop.name, "sat_" + prop.name]
 
     #print(prop.name + " : " + str(prop.var_id))
@@ -53,13 +46,6 @@ def addPropertySatVariables(sas_task, prop, addToGoal=False):
 
     # update initial state -> at the beginning the property is not satisfied
     sas_task.init.values.append(0)
-
-    # if addTo:
-        # update goal -> at the end the property has to be satisfied
-        # sas_Goaltask.goal.pairs.append((prop.var_id, 1))
-
-
-
 
 def addPropertyCheckingActions(sas_task, prop, actionSets, eval_phase_var_id):
     #add the actions checking if the property ist true
@@ -92,19 +78,7 @@ def addPropertyCheckingActions(sas_task, prop, actionSets, eval_phase_var_id):
         sas_task.operators.append(SASOperator("(" + prop.name + "_ " + str(c) + ")",[], pre_post, 0))
 
 
-def specifySoftGoals(sas_task, asp):
-     #specify soft goals
-    for g in asp.soft_goals:
-        #print("Add soft_goal: " + g)
-        for i in range(len(sas_task.variables.value_names)):
-            for j in range(len(sas_task.variables.value_names[i])):
-                value_name = sas_task.variables.value_names[i][j]
-                #print("\t " + value_name)
-                if value_name.endswith(g):
-                    sas_task.variables.value_names[i][j] = "soft_" + value_name
-
-
-def compileActionSetProperties(sas_task, properties, actionSets, addPropertiesToGoal=False):
+def compileActionSetProperties(sas_task, properties, actionSets):
 
     if len(properties) == 0:
         return
@@ -112,14 +86,5 @@ def compileActionSetProperties(sas_task, properties, actionSets, addPropertiesTo
     eval_phase_var_id = addChangePhase(sas_task)
 
     for prop in properties:
-        addPropertySatVariables(sas_task, prop, addPropertiesToGoal)
+        addPropertySatVariables(sas_task, prop)
         addPropertyCheckingActions(sas_task, prop, actionSets, eval_phase_var_id)
-
-    ####################### GOALS ########################
-    #specifySoftGoals(sas_task, asp)
-        
-        
-
-       
-
-       
