@@ -72,19 +72,19 @@ class XPPFramework:
             print("Relaxed tasks to SAS output")
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             relaxed_task.update_init_and_limits(self.sas_task)
-            if not self.options.compile_relaxed_tasks:
+            if hasattr(self.options, 'copmile_relaxed_tasks') and not self.options.compile_relaxed_tasks:
                 if hasattr(self.sas_task, 'addRelaxedTask'):
                     self.sas_task.addRelaxedTask(relaxed_task)
 
         relaxation_compilation = RelaxationCompilation(self.EXPSET.get_relaxed_tasks(), self.sas_task)
-        if self.options.compile_relaxed_tasks:
+        if hasattr(self.options, 'copmile_relaxed_tasks') and self.options.compile_relaxed_tasks:
             print("Compile relaxed tasks variables into planning task")
             relaxation_compilation.compile_tasks_part_one()
 
         # compile plan properties after relax task variables to have access to the relaxed task variables
         self.compile_plan_properties()
 
-        if self.options.compile_relaxed_tasks:
+        if hasattr(self.options, 'copmile_relaxed_tasks') and self.options.compile_relaxed_tasks:
             print("Compile relaxed tasks operators into planning task")
             relaxation_compilation.compile_tasks_part_two()
             
