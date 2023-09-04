@@ -68,7 +68,7 @@ class XPPFramework:
 
         # relaxed tasks to sas_task
         print("#relaxed tasks: " +str(len(self.EXPSET.get_relaxed_tasks())))
-        if not self.options.compile_relaxed_tasks:
+        if hasattr(self.options, 'copmile_relaxed_tasks') and not self.options.compile_relaxed_tasks:
             print("Relaxed tasks to SAS output")
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             relaxed_task.update_init_and_limits(self.sas_task)
