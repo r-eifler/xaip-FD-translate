@@ -5,14 +5,20 @@ from xaip.action_sets.action import ActionSet
 
 class GoalProperty(PlanProperty):
 
-    def __init__(self, name, formula):
-        super().__init__(name, formula)
+    def __init__(self, name, formula, weaker=[], stronger=[]):
+        super().__init__(name, formula, weaker, stronger)
 
 
     @staticmethod
     def fromJSON(json, typeObjectMap):
         formula = json['formula']
-        new_property = GoalProperty(json['name'], formula)
+        weaker = []
+        stronger = []
+        if 'weaker' in json:
+            weaker = json['weaker']
+        if 'stronger' in json:
+            stronger = json['stronger']
+        new_property = GoalProperty(json['name'], formula,weaker, stronger)
         return new_property
 
     def __eq__(self, other):

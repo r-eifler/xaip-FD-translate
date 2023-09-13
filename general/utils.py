@@ -38,3 +38,7 @@ def literalVarValue(sas_task, constant):
                 return var, v
 
     return None, None
+
+
+def varValueLiteral(sas_task, var, value):
+    return sas_task.variables.value_names[var][value].replace('Atom ','').replace(" ", "")
