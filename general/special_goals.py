@@ -70,6 +70,8 @@ def set_goals(sas_task, EXPSET, options):
         # add original goals as soft goals
         for gf in sas_task.goal.pairs:
             sas_task.addSoftGoalFact(gf)
+            fact = varValueLiteral(sas_task, gf[0], gf[1])
+            soft_goals.append(GoalProperty(fact, fact))
         
         # add hard goals
         hard_goal_names = []
