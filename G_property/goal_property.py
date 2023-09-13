@@ -11,7 +11,7 @@ class GoalProperty(PlanProperty):
 
     @staticmethod
     def fromJSON(json, typeObjectMap):
-        formula = json['formula']
+        (formula, rest, constants) = logic_formula.parseFormula(json['formula'])
         weaker = []
         stronger = []
         if 'weaker' in json:
@@ -20,6 +20,12 @@ class GoalProperty(PlanProperty):
             stronger = json['stronger']
         new_property = GoalProperty(json['name'], formula,weaker, stronger)
         return new_property
+    
+    def getClauses(self):
+        if(isinstance(self.formula, logic_formula.LOr)):
+            return self.formula.getClauses([])
+        else:
+            return [self.formula.getClauses([])]
 
     def __eq__(self, other):
         return self.name == other.name
