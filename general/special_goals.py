@@ -1,4 +1,5 @@
-from xaip.general.utils import literalVarValue
+from xaip.G_property.goal_property import GoalProperty
+from xaip.general.utils import literalVarValue, varValueLiteral
 
 class Goal:
 
@@ -47,6 +48,8 @@ def set_goals(sas_task, EXPSET, options):
     # if there are hard goals then they acan be necessary for the LTLf compilation
     # so they need to stay hardgoals
     
+    soft_goals = []
+    
     if EXPSET.has_hard_goals() and EXPSET.has_soft_goals():
         print("hard AND soft goals are specified (goals not specified as hard or soft goals are not considered)")
         # add hard goals
@@ -55,18 +58,20 @@ def set_goals(sas_task, EXPSET, options):
 
         # add soft goals
         for sg in EXPSET.soft_goals:
+            soft_goals.append(sg)
             sas_task.addSoftGoalFact(sg.get_sas_fact(sas_task, EXPSET))
 
         # make goals consistent with hard + soft goals
         sas_task.goal.reset_facts([g.get_sas_fact(sas_task, EXPSET) for g in EXPSET.hard_goals + EXPSET.soft_goals])
-        return
     
     if EXPSET.has_hard_goals():
-        print("hard goals are specified but not soft goals -> original goal facts and all properties are soft goals")
+        print("hard goals are specified but not soft goals -> original goal facts and all remaining properties are soft goals")
         
         # add original goals as soft goals
         for gf in sas_task.goal.pairs:
             sas_task.addSoftGoalFact(gf)
+            fact = varValueLiteral(sas_task, gf[0], gf[1])
+            soft_goals.append(GoalProperty(fact, fact))
         
         # add hard goals
         hard_goal_names = []
@@ -83,14 +88,34 @@ def set_goals(sas_task, EXPSET, options):
             pair = Goal(pg.name).get_sas_fact(sas_task, EXPSET)
             sas_task.addSoftGoalFact(pair)
             sas_task.goal.pairs.append(pair)
-        return
+            soft_goals.append(pg)
 
     else:
         print("No hard and no soft goals -> original goal facts and all properties are soft goals")
-        for gf in sas_task.goal.pairs:
+        for i, gf in enumerate(sas_task.goal.pairs):
             sas_task.addSoftGoalFact(gf)
+            fact = varValueLiteral(sas_task, gf[0], gf[1])
+            soft_goals.append(GoalProperty(fact, fact))
 
         for pg in EXPSET.get_action_set_properties() + EXPSET.get_ltl_properties() + EXPSET.get_goal_properties():
             pair = Goal(pg.name).get_sas_fact(sas_task, EXPSET)
             sas_task.addSoftGoalFact(pair)
             sas_task.goal.pairs.append(pair)
+            soft_goals.append(pg)
+            
+            
+    # update soft goal graph
+    edges = set()
+    for sg in soft_goals:
+        sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
+        edges.add((sg_pair, sg_pair))
+        for w in sg.weaker:
+            edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
+        for s in sg.stronger:
+            edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
+    
+    print('------ soft goal graph ----')
+    print('num edges: ' + str(len(edges)))
+    for e in edges:
+        print(e)
+    sas_task.addSoftGoalGraph(list(edges))

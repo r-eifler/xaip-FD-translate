@@ -61,6 +61,8 @@ class XPPFramework:
 
             print("# AS properties: " + str(len(self.EXPSET.get_action_set_properties())))
             print("# LTL properties: " + str(len(self.EXPSET.get_ltl_properties())))
+            for p in self.EXPSET.get_ltl_properties():
+                print(p.name)
             print("# G properties: " + str(len(self.EXPSET.get_goal_properties())))
 
     def run(self):
@@ -68,24 +70,15 @@ class XPPFramework:
 
         # relaxed tasks to sas_task
         print("#relaxed tasks: " +str(len(self.EXPSET.get_relaxed_tasks())))
-        if not self.options.compile_relaxed_tasks:
-            print("Relaxed tasks to SAS output")
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             relaxed_task.update_init_and_limits(self.sas_task)
             if not self.options.compile_relaxed_tasks:
-                self.sas_task.addRelaxedTask(relaxed_task)
-
-        relaxation_compilation = RelaxationCompilation(self.EXPSET.get_relaxed_tasks(), self.sas_task)
-        if self.options.compile_relaxed_tasks:
-            print("Compile relaxed tasks variables into planning task")
-            relaxation_compilation.compile_tasks_part_one()
+                if hasattr(self.sas_task, 'addRelaxedTask'):
+                    self.sas_task.addRelaxedTask(relaxed_task)
 
         # compile plan properties after relax task variables to have access to the relaxed task variables
         self.compile_plan_properties()
 
-        if self.options.compile_relaxed_tasks:
-            print("Compile relaxed tasks operators into planning task")
-            relaxation_compilation.compile_tasks_part_two()
             
     def get_additional_init_facts(self):
         add_facts = set()
@@ -100,6 +93,8 @@ class XPPFramework:
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             for f in relaxed_task.get_init_fact_names() + relaxed_task.get_limits_fact_names():
                 needed_facts.add(PredFact.parse(f))
+        for f in self.EXPSET.get_not_pruned_facts():
+            needed_facts.add(PredFact.parse(f))
         return needed_facts
 
     def get_needed_values(self, pre_sas_task):
@@ -107,7 +102,7 @@ class XPPFramework:
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             for f in relaxed_task.get_init_fact_names() + relaxed_task.get_limits_fact_names():
                 needed_facts.add(f)
-
+        needed_facts.update(self.EXPSET.get_not_pruned_facts())
         needed_vars = {}
         for fact in needed_facts:
             for var_id, variable in enumerate(pre_sas_task.variables.value_names):
@@ -119,6 +114,7 @@ class XPPFramework:
                         for i in range(0, len(variable)):
                             needed_vars[var_id].add(i)
                         break
+        
         return needed_vars
 
     def compile_plan_properties(self):

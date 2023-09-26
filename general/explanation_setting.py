@@ -12,6 +12,8 @@ class ExplanationSetting:
 
         self.relaxed_tasks = []
 
+        self.not_pruned_facts = []
+
     def add_action_set(self, set):
         # assert set.name not in self.action_sets
         set.name = set.name + '_' + str(len(self.action_sets)) # unique name for each action set
@@ -94,3 +96,9 @@ class ExplanationSetting:
 
     def get_relaxed_tasks(self):
         return self.relaxed_tasks
+    
+    def add_not_pruned_fact(self, fact):
+        self.not_pruned_facts.append(fact)
+
+    def get_not_pruned_facts(self):
+        return self.not_pruned_facts
