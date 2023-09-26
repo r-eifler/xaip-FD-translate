@@ -70,7 +70,7 @@ def addFluents(automata, id, sas_task):
     #variable to indicate if the automata is currently in an accepting state -> later used in the "goal fact dependencies"
     # id of the accepting var in the encoding to the variables 
     automata.accept_var = len(sas_task.variables.value_names)
-    accept_var_domain = ["not_accepting(" + automata.name +")", "soft_accepting(" + automata.name + ")"]
+    accept_var_domain = ["not_accepting(" + automata.name +")", "accepting(" + automata.name + ")"]
     sas_task.variables.value_names.append(accept_var_domain)
     sas_task.variables.ranges.append(len(accept_var_domain))
     sas_task.variables.axiom_layers.append(-1)

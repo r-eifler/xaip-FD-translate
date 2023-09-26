@@ -27,9 +27,14 @@ def parse(json_encoding, typeObjectMap, EXPSET):
             # print("Replace constant name: " + oldName + " " + set.name)
             property.update_action_set_name(oldName, set.name)
 
-    if "hard_goals" in json_encoding and "soft_goals" in json_encoding:
+    if "hard_goals" in json_encoding:
         EXPSET.add_hard_goals(Goal.fromJSON(json_encoding["hard_goals"], EXPSET))
+
+    if "soft_goals" in json_encoding:
         EXPSET.add_soft_goals(Goal.fromJSON(json_encoding["soft_goals"], EXPSET))
 
     if 'relaxed_tasks' in json_encoding:
         EXPSET.relaxed_tasks = relaxed_task.parse_tasks(json_encoding['relaxed_tasks'])
+
+    if 'not_pruned_facts' in json_encoding:
+        EXPSET.not_pruned_facts = json_encoding["not_pruned_facts"]

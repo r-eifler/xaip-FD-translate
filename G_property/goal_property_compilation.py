@@ -33,7 +33,6 @@ def addPropertyCheckingActions(sas_task, prop):
     # print("Clauses: \n Property: " + str(prop))
     #for every clause in DNF we have to create one action
     clauses = prop.getClauses()
-    # print(clauses)
     for c in clauses:
         pre_post = []
         # literals form the preconditions
@@ -54,7 +53,6 @@ def compile(sas_task, property):
     # print("**************************************************************")
     # print(property)
     if isinstance(property.formula, logic_formula.LConstant):
-        print('compile_single_goal_fact')
         compile_single_goal_fact(sas_task,property)
         return
     

@@ -22,7 +22,7 @@ def literalVarValueList(sas_task, constant, neg):
                         # if the domain size is 2, return the negated constant
                         return [(var, v+1)]
                 return [(var, v)]
-
+    assert False, constant + " does not exist: " + str(sas_task.variables.value_names)
     return None
 
 
