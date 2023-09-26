@@ -72,7 +72,7 @@ class XPPFramework:
         print("#relaxed tasks: " +str(len(self.EXPSET.get_relaxed_tasks())))
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
             relaxed_task.update_init_and_limits(self.sas_task)
-            if not self.options.compile_relaxed_tasks:
+            if hasattr(self.options, 'copmile_relaxed_tasks') and not self.options.compile_relaxed_tasks:
                 if hasattr(self.sas_task, 'addRelaxedTask'):
                     self.sas_task.addRelaxedTask(relaxed_task)
 
