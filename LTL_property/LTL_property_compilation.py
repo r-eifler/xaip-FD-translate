@@ -100,7 +100,7 @@ def automataTransitionOperators(automata, sas_task, actionSets):
 
             #accepting
             # if the target state is accepting than the variable which indicates the acceptance of the
-            # automata is set to true
+            # automata is set to true otherwise to false
             pre_post.append((automata.accept_var, int(t.source.accepting), int(t.target.accepting), []))
             #print("Var: " + str(automata.accept_var) + " Source: " + str(t.source.accepting) + " -> " + str(t.target.accepting))
 
