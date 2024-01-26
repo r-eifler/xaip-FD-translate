@@ -44,11 +44,12 @@ class Goal:
 # the soft or in the hard goals
 def set_goals(sas_task, EXPSET, options):
     print("****************************************************************************")
-    # if there are hard goals then they acan be necessary for the LTLf compilation
+    # if there are hard goals then they can be necessary for the LTLf compilation
     # so they need to stay hardgoals
     
-    if EXPSET.has_hard_goals() and EXPSET.has_soft_goals():
+    if (EXPSET.has_hard_goals() and EXPSET.has_soft_goals()) or EXPSET.only_use_here_specified_goals:
         print("hard AND soft goals are specified (goals not specified as hard or soft goals are not considered)")
+        print("only_use_here_specified_goals: " + str(EXPSET.only_use_here_specified_goals))
         # add hard goals
         for hg in EXPSET.hard_goals:
             sas_task.addHardGoalFact(hg.get_sas_fact(sas_task, EXPSET))
@@ -62,7 +63,7 @@ def set_goals(sas_task, EXPSET, options):
         return
     
     if EXPSET.has_hard_goals():
-        print("hard goals are specified but not soft goals -> original goal facts and all properties are soft goals")
+        print("hard goals are specified but no soft goals -> original goal facts and all properties are soft goals")
         
         # add original goals as soft goals
         for gf in sas_task.goal.pairs:
