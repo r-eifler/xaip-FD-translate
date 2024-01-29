@@ -9,6 +9,7 @@ class ExplanationSetting:
 
         self.hard_goals = []
         self.soft_goals = []
+        self.only_use_here_specified_goals = False
 
         self.relaxed_tasks = []
 

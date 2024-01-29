@@ -45,13 +45,14 @@ class Goal:
 # the soft or in the hard goals
 def set_goals(sas_task, EXPSET, options):
     print("****************************************************************************")
-    # if there are hard goals then they acan be necessary for the LTLf compilation
+    # if there are hard goals then they can be necessary for the LTLf compilation
     # so they need to stay hardgoals
     
     soft_goals = []
     
-    if EXPSET.has_hard_goals() and EXPSET.has_soft_goals():
+    if (EXPSET.has_hard_goals() and EXPSET.has_soft_goals()) or EXPSET.only_use_here_specified_goals:
         print("hard AND soft goals are specified (goals not specified as hard or soft goals are not considered)")
+        print("only_use_here_specified_goals: " + str(EXPSET.only_use_here_specified_goals))
         # add hard goals
         for hg in EXPSET.hard_goals:
             sas_task.addHardGoalFact(hg.get_sas_fact(sas_task, EXPSET))
@@ -65,7 +66,7 @@ def set_goals(sas_task, EXPSET, options):
         sas_task.goal.reset_facts([g.get_sas_fact(sas_task, EXPSET) for g in EXPSET.hard_goals + EXPSET.soft_goals])
     
     if EXPSET.has_hard_goals():
-        print("hard goals are specified but not soft goals -> original goal facts and all remaining properties are soft goals")
+        print("hard goals are specified but no soft goals -> original goal facts and all properties are soft goals")
         
         # add original goals as soft goals
         for gf in sas_task.goal.pairs:
@@ -105,17 +106,19 @@ def set_goals(sas_task, EXPSET, options):
             
             
     # update soft goal graph
-    edges = set()
-    for sg in soft_goals:
-        sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
-        edges.add((sg_pair, sg_pair))
-        for w in sg.weaker:
-            edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
-        for s in sg.stronger:
-            edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
-    
-    print('------ soft goal graph ----')
-    print('num edges: ' + str(len(edges)))
-    for e in edges:
-        print(e)
-    sas_task.addSoftGoalGraph(list(edges))
+    if hasattr(sas_task, 'addSoftGoalGraph'):
+        edges = set()
+        for sg in soft_goals:
+            sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
+            edges.add((sg_pair, sg_pair))
+            for w in sg.weaker:
+                edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
+            for s in sg.stronger:
+                edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
+        
+        print('------ soft goal graph ----')
+        print('num edges: ' + str(len(edges)))
+        for e in edges:
+            print(e)
+        hasattr(sas_task, 'addSoftGoalGraph')
+        sas_task.addSoftGoalGraph(list(edges))
