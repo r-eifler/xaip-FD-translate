@@ -44,12 +44,14 @@ class RelaxedTask:
         self.lower_cover = []
 
     def get_init_fact_names(self):
+        # return []
         return [f.replace('! ','') for f in self.init_fact_names]
 
     def __repr__(self):
         return str(self.id) + ': ' + self.name + '\n ' + str(self.init) + '\n ' + str(self.limits) + '\n ' + str(self.cover)
 
     def update_init_and_limits(self, sas_task):
+        # pass
         var_names = sas_task.variables.value_names
         self.init = [find_var_value_id(var_names,f) for f in self.init_fact_names]
 
