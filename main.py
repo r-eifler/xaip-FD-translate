@@ -83,7 +83,7 @@ class XPPFramework:
     def get_additional_init_facts(self):
         add_facts = set()
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
-            for f in relaxed_task.get_init_fact_names() + relaxed_task.get_limits_fact_names():
+            for f in relaxed_task.get_init_fact_names():
                 add_facts.add(PredFact.parse(f))
         return add_facts
             
@@ -91,7 +91,7 @@ class XPPFramework:
     def get_needed_facts(self):
         needed_facts = set()
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
-            for f in relaxed_task.get_init_fact_names() + relaxed_task.get_limits_fact_names():
+            for f in relaxed_task.get_init_fact_names():
                 needed_facts.add(PredFact.parse(f))
         for f in self.EXPSET.get_not_pruned_facts():
             needed_facts.add(PredFact.parse(f))
@@ -100,7 +100,7 @@ class XPPFramework:
     def get_needed_values(self, pre_sas_task):
         needed_facts = set()
         for relaxed_task in self.EXPSET.get_relaxed_tasks():
-            for f in relaxed_task.get_init_fact_names() + relaxed_task.get_limits_fact_names():
+            for f in relaxed_task.get_init_fact_names():
                 needed_facts.add(f)
         needed_facts.update(self.EXPSET.get_not_pruned_facts())
         needed_vars = {}
