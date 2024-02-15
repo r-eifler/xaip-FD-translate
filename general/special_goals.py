@@ -103,19 +103,20 @@ def set_goals(sas_task, EXPSET, options):
             sas_task.goal.pairs.append(pair)
             soft_goals.append(pg)
             
-            
-    # update soft goal graph
-    edges = set()
-    for sg in soft_goals:
-        sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
-        edges.add((sg_pair, sg_pair))
-        for w in sg.weaker:
-            edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
-        for s in sg.stronger:
-            edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
     
-    print('------ soft goal graph ----')
-    print('num edges: ' + str(len(edges)))
-    for e in edges:
-        print(e)
-    sas_task.addSoftGoalGraph(list(edges))
+    if hasattr(sas_task, "addSoftGoalGraph"):
+        # update soft goal graph
+        edges = set()
+        for sg in soft_goals:
+            sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
+            edges.add((sg_pair, sg_pair))
+            for w in sg.weaker:
+                edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
+            for s in sg.stronger:
+                edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
+        
+        print('------ soft goal graph ----')
+        print('num edges: ' + str(len(edges)))
+        for e in edges:
+            print(e)
+        sas_task.addSoftGoalGraph(list(edges))
