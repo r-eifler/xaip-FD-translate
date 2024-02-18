@@ -101,6 +101,8 @@ class Operator:
             return OpUntil.parse(parts)
         elif parts[0] == "W": 
             return OpWeakUntil.parse(parts)
+        elif parts[0] == "R": 
+            return OpRelease.parse(parts)
         else:
             return LConstant.parse(parts)
 
@@ -455,10 +457,10 @@ class OpSometimes(Operator):
 
     
     def __repr__(self):
-        return " <> " + str(self.operand)
+        return "( <> " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " <> " + self.operand.SAS_repr(actionSets)
+        return " <> " + self.operand.SAS_repr(actionSets) + " )"
 
 class OpAlways(Operator):
 
@@ -477,10 +479,10 @@ class OpAlways(Operator):
         return OpAlways(self.operand.replaceConstantsName(map))
 
     def __repr__(self):
-        return " [] " + str(self.operand)
+        return "( [] " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " [] " + self.operand.SAS_repr(actionSets)
+        return "( [] " + self.operand.SAS_repr(actionSets) + " )"
 
     
 class OpNext(Operator):
@@ -500,10 +502,10 @@ class OpNext(Operator):
         return OpNext(self.operand.replaceConstantsName(map))
 
     def __repr__(self):
-        return " X " + str(self.operand)
+        return "( X " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " X " + self.operand.SAS_repr(actionSets)
+        return "( X " + self.operand.SAS_repr(actionSets) + " )"
 
 class OpUntil(Operator):
 
@@ -525,10 +527,10 @@ class OpUntil(Operator):
         return OpUntil(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return str(self.left) + " U " + str(self.right)
+        return "(" + str(self.left) + " U " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return self.left.SAS_repr(actionSets) + " U " + self.right.SAS_repr(actionSets)
+        return "(" + self.left.SAS_repr(actionSets) + " U " + self.right.SAS_repr(actionSets) + " )"
 
 
 class OpWeakUntil(Operator):
@@ -551,7 +553,34 @@ class OpWeakUntil(Operator):
         return OpWeakUntil(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return str(self.left) + " W " + str(self.right)
+        return "(" + str(self.left) + " W " + str(self.right)
 
     def SAS_repr(self, actionSets):
-        return self.left.SAS_repr(actionSets) + " W " + self.right.SAS_repr(actionSets)
+        return "(" + self.left.SAS_repr(actionSets) + " W " + self.right.SAS_repr(actionSets)  + " )"
+    
+
+
+class OpRelease(Operator):
+
+    @staticmethod
+    def parse(parts):
+        operatorString = parts.pop(0)
+        assert(operatorString == "R")
+        (operand_left, rest1, constants1) = Operator.parse(parts)
+        (operand_right, rest2, constants2) = Operator.parse(rest1)
+
+        return (OpRelease(operand_left, operand_right), rest2, constants1 + constants2)
+
+
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def replaceConstantsName(self, map):
+        return OpRelease(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
+
+    def __repr__(self):
+        return "(" + str(self.left) + " R " + str(self.right) + " )"
+
+    def SAS_repr(self, actionSets):
+        return "(" + self.left.SAS_repr(actionSets) + " R " + self.right.SAS_repr(actionSets)  + " )"
