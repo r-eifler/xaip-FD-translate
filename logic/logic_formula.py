@@ -220,10 +220,10 @@ class LNot(Operator):
     
 
     def __repr__(self):
-        return " (! " + str(self.operand) + ") "
+        return " ( ! " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " (! " + self.operand.SAS_repr(actionSets) + ") "
+        return " ( ! " + self.operand.SAS_repr(actionSets) + " )"
 
 
 class LAnd(Operator):
@@ -293,10 +293,10 @@ class LAnd(Operator):
         return LAnd(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " && " + str(self.right) + ")"
+        return "( " + str(self.left) + " && " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " && " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " && " + self.right.SAS_repr(actionSets) + " )"
 
 class LOr(Operator):
     @staticmethod
@@ -348,10 +348,10 @@ class LOr(Operator):
         return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " || " + str(self.right) + ")"
+        return "( " + str(self.left) + " || " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " || " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " || " + self.right.SAS_repr(actionSets) + " )"
     
 
 class LImplication(Operator):
@@ -391,10 +391,10 @@ class LImplication(Operator):
         return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " -> " + str(self.right) + ")"
+        return "( " + str(self.left) + " -> " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " -> " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " -> " + self.right.SAS_repr(actionSets) + " )"
     
 class LEquivalence(Operator):
     @staticmethod
@@ -433,10 +433,10 @@ class LEquivalence(Operator):
         return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " <-> " + str(self.right) + ")"
+        return "( " + str(self.left) + " <-> " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " <-> " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " <-> " + self.right.SAS_repr(actionSets) + " )"
 
 
 class OpSometimes(Operator):
@@ -460,7 +460,7 @@ class OpSometimes(Operator):
         return "( <> " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " <> " + self.operand.SAS_repr(actionSets) + " )"
+        return "( <> " + self.operand.SAS_repr(actionSets) + " )"
 
 class OpAlways(Operator):
 
@@ -553,7 +553,7 @@ class OpWeakUntil(Operator):
         return OpWeakUntil(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " W " + str(self.right)
+        return "(" + str(self.left) + " W " + str(self.right)  + " )"
 
     def SAS_repr(self, actionSets):
         return "(" + self.left.SAS_repr(actionSets) + " W " + self.right.SAS_repr(actionSets)  + " )"
