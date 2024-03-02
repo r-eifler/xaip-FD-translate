@@ -388,11 +388,7 @@ class LImplication(Operator):
         return " -> "  + self.left.toPrefixForm() + " " + self.right.toPrefixForm()
 
     def replaceConstantsName(self, map):
-<<<<<<< HEAD
-        return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
-=======
         return LImplication(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
->>>>>>> fix
 
     def __repr__(self):
         return "( " + str(self.left) + " -> " + str(self.right) + " )"
@@ -434,11 +430,7 @@ class LEquivalence(Operator):
         return " <-> "  + self.left.toPrefixForm() + " " + self.right.toPrefixForm()
 
     def replaceConstantsName(self, map):
-<<<<<<< HEAD
-        return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
-=======
         return LEquivalence(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
->>>>>>> fix
 
     def __repr__(self):
         return "( " + str(self.left) + " <-> " + str(self.right) + " )"
