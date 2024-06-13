@@ -7,12 +7,18 @@ class ExplanationSetting:
         self.ltl_properties = {}
         self.g_properties = {}
 
-        self.hard_goals = []
-        self.soft_goals = []
+        self.hard_goals = None
+        self.soft_goals = None
 
         self.relaxed_tasks = []
 
         self.not_pruned_facts = []
+
+    def init_soft_goals(self):
+        self.soft_goals = []
+
+    def init_hard_goals(self):
+        self.hard_goals = []
 
     def add_action_set(self, set):
         # assert set.name not in self.action_sets
@@ -67,10 +73,10 @@ class ExplanationSetting:
         return None
 
     def has_hard_goals(self):
-        return len(self.hard_goals) > 0
+        return self.hard_goals != None
 
     def has_soft_goals(self):
-        return len(self.soft_goals) > 0
+        return self.soft_goals != None
 
     def add_hard_goal(self, goal):
         # print("Hard goals: ")

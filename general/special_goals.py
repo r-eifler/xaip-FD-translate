@@ -64,7 +64,7 @@ def set_goals(sas_task, EXPSET, options):
         # make goals consistent with hard + soft goals
         sas_task.goal.reset_facts([g.get_sas_fact(sas_task, EXPSET) for g in EXPSET.hard_goals + EXPSET.soft_goals])
     
-    if EXPSET.has_hard_goals():
+    elif EXPSET.has_hard_goals():
         print("hard goals are specified but not soft goals -> original goal facts and all remaining properties are soft goals")
         
         # add original goals as soft goals
