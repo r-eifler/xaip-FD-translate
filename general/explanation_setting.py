@@ -73,17 +73,10 @@ class ExplanationSetting:
         return None
 
     def has_hard_goals(self):
-<<<<<<< HEAD
-        return self.hard_goals != None
-
-    def has_soft_goals(self):
-        return self.soft_goals != None
-=======
         return self.hard_goals is not None
 
     def has_soft_goals(self):
         return self.soft_goals is not None
->>>>>>> noneVS0
 
     def add_hard_goal(self, goal):
         # print("Hard goals: ")
