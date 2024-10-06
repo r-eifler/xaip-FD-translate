@@ -42,6 +42,7 @@ class LTLProperty(PlanProperty):
         #spot_bin = "~/Uni/XAI/programms/Spot/spot-2.6.3/bin/"
         spot_bin = os.environ.get("SPOT_BIN_PATH", "/mnt/data_server/eifler/LTL2BA/spot-2.6.3/bin/")
         formula = str(self.genericFormula)
+        # print(formula)
         output_file = self.name
         ltl2hoa_path = os.environ.get("LTL2HAO_PATH", "/mnt/data_server/eifler/ltl-mode/ltlfkit/")
         #cmd = spot_bin + "ltlfilt --from-ltlf -f '" + formula + "' | " + spot_bin + "ltl2tgba -B -D -s -C | " + spot_bin + "autfilt --remove-ap=alive -B -D -C -s --small > " + output_file

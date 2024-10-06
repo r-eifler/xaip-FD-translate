@@ -65,8 +65,8 @@ def set_goals(sas_task, EXPSET, options):
         # make goals consistent with hard + soft goals
         sas_task.goal.reset_facts([g.get_sas_fact(sas_task, EXPSET) for g in EXPSET.hard_goals + EXPSET.soft_goals])
     
-    if EXPSET.has_hard_goals():
-        print("hard goals are specified but no soft goals -> original goal facts and all properties are soft goals")
+    elif EXPSET.has_hard_goals():
+        print("hard goals are specified but not soft goals -> original goal facts and all remaining properties are soft goals")
         
         # add original goals as soft goals
         for gf in sas_task.goal.pairs:
@@ -104,9 +104,9 @@ def set_goals(sas_task, EXPSET, options):
             sas_task.goal.pairs.append(pair)
             soft_goals.append(pg)
             
-            
-    # update soft goal graph
-    if hasattr(sas_task, 'addSoftGoalGraph'):
+    
+    if hasattr(sas_task, "addSoftGoalGraph"):
+        # update soft goal graph
         edges = set()
         for sg in soft_goals:
             sg_pair = Goal(sg.name).get_sas_fact(sas_task, EXPSET)
@@ -120,5 +120,4 @@ def set_goals(sas_task, EXPSET, options):
         print('num edges: ' + str(len(edges)))
         for e in edges:
             print(e)
-        hasattr(sas_task, 'addSoftGoalGraph')
         sas_task.addSoftGoalGraph(list(edges))

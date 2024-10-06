@@ -29,9 +29,11 @@ def parse(json_encoding, typeObjectMap, EXPSET):
                 property.update_action_set_name(oldName, set.name)
 
     if "hard_goals" in json_encoding:
+        EXPSET.init_hard_goals()
         EXPSET.add_hard_goals(Goal.fromJSON(json_encoding["hard_goals"], EXPSET))
 
     if "soft_goals" in json_encoding:
+        EXPSET.init_soft_goals()
         EXPSET.add_soft_goals(Goal.fromJSON(json_encoding["soft_goals"], EXPSET))
 
     if "only_use_here_specified_goals" in json_encoding:

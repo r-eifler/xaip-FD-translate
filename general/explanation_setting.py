@@ -7,13 +7,19 @@ class ExplanationSetting:
         self.ltl_properties = {}
         self.g_properties = {}
 
-        self.hard_goals = []
-        self.soft_goals = []
         self.only_use_here_specified_goals = False
+        self.hard_goals = None
+        self.soft_goals = None
 
         self.relaxed_tasks = []
 
         self.not_pruned_facts = []
+
+    def init_soft_goals(self):
+        self.soft_goals = []
+
+    def init_hard_goals(self):
+        self.hard_goals = []
 
     def add_action_set(self, set):
         # assert set.name not in self.action_sets
@@ -68,27 +74,36 @@ class ExplanationSetting:
         return None
 
     def has_hard_goals(self):
-        return len(self.hard_goals) > 0
+        return self.hard_goals is not None
 
     def has_soft_goals(self):
-        return len(self.soft_goals) > 0
+        return self.soft_goals is not None
 
     def add_hard_goal(self, goal):
         # print("Hard goals: ")
         # print(self.hard_goals)
-        assert goal not in self.soft_goals
+        if self.hard_goals is None:
+            self.hard_goals = []
+        assert self.soft_goals is None or goal not in self.soft_goals
         assert goal not in self.hard_goals, "Already contained: " + str(goal)
         self.hard_goals.append(goal)
 
     def add_hard_goals(self, goals):
+        if self.hard_goals is None:
+            self.hard_goals = []
         for g in goals:
             self.add_hard_goal(g)
 
     def add_soft_goal(self, goal):
-        assert goal not in self.soft_goals and goal not in self.hard_goals, "Already contained: " + str(goal)
+        if self.soft_goals is None:
+            self.soft_goals = []
+        assert self.hard_goals is None or goal not in self.hard_goals
+        assert goal not in self.soft_goals, "Already contained: " + str(goal)
         self.soft_goals.append(goal)
 
     def add_soft_goals(self, goals):
+        if self.soft_goals is None:
+            self.soft_goals = []
         for g in goals:
             self.add_soft_goal(g)
 

@@ -15,6 +15,22 @@ def parse_tasks(json_def):
     return [RelaxedTask.parse(tj) for tj in json_def]
 
 
+class ApplicableAction:
+
+    def __init__(self, name, params, param_id, upper_bound, lower_bound) -> None:
+        self.name = name
+        self.params = params
+        self.param_id = param_id
+        self.upper_bound = upper_bound
+        self.lower_bound = lower_bound
+
+    @staticmethod
+    def parse(json_def):
+        return ApplicableAction(json_def["name"], json_def["params"], 
+                                json_def["param_id"], json_def["upper_bound"],
+                                json_def["lower_bound"])
+
+
 class RelaxedTask:
 
     def __init__(self, id, name):
@@ -22,32 +38,28 @@ class RelaxedTask:
         self.name = name
         self.init = []
         self.init_fact_names = []
-        self.limits = []
-        self.limits_fact_names = []
-        self.limit_type = 'OR'
+        self.applicable = []
 
         self.upper_cover = []
         self.lower_cover = []
 
     def get_init_fact_names(self):
+        # return []
         return [f.replace('! ','') for f in self.init_fact_names]
-
-    def get_limits_fact_names(self):
-        return [f.replace('! ','') for f in self.limits_fact_names ]
 
     def __repr__(self):
         return str(self.id) + ': ' + self.name + '\n ' + str(self.init) + '\n ' + str(self.limits) + '\n ' + str(self.cover)
 
     def update_init_and_limits(self, sas_task):
+        # pass
         var_names = sas_task.variables.value_names
         self.init = [find_var_value_id(var_names,f) for f in self.init_fact_names]
-        self.limits = [find_var_value_id(var_names,f) for f in self.limits_fact_names]
 
     @staticmethod
     def parse(json_def):
         print(json_def)
         assert ('name' in json_def and 'id' in json_def and 'upper_cover' in json_def and 'lower_cover' in json_def)
-        assert ('inits' in json_def or 'limits' in json_def)
+        assert ('inits' in json_def or 'applicable' in json_def)
 
         id = json_def['id']
         name = json_def['name']
@@ -59,16 +71,10 @@ class RelaxedTask:
 
         if 'inits' in json_def:
             newTask.init_fact_names = json_def['inits']
-        else:
-            newTask.init_fact_names = []
 
-        if 'limits' in json_def:
-            limits = json_def['limits']
-            newTask.limits_fact_names = limits['facts']
-            newTask.limit_type = limits['type']
-        else:
-            newTask.limits_fact_names = []
-            newTask.limit_type = []
+        if 'applicable' in json_def:
+            for jd in json_def["applicable"]:
+                newTask.applicable.append(ApplicableAction.parse(jd))
 
         return newTask
 

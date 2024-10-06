@@ -40,9 +40,8 @@ class AuxillaryVariable:
 
 # adds the fluents which describe the state of automata
 def addFluents(automata, id, sas_task):
+
     states_sorted = list(automata.get_states())
-    #sort the states according to their id TODO which ID ?
-    states_sorted.sort(key=State.get_name)
 
     variable = []
     #if the automata has more than one state one value per state is added

@@ -86,6 +86,10 @@ class Operator:
             return LOr.parse(parts)
         elif parts[0] == "&&": 
             return LAnd.parse(parts)
+        elif parts[0] == "->": 
+            return LImplication.parse(parts)
+        elif parts[0] == "<->": 
+            return LEquivalence.parse(parts)
 
         elif parts[0] == "<>" or parts[0] == "F":
             return OpSometimes.parse(parts)
@@ -97,6 +101,8 @@ class Operator:
             return OpUntil.parse(parts)
         elif parts[0] == "W": 
             return OpWeakUntil.parse(parts)
+        elif parts[0] == "R": 
+            return OpRelease.parse(parts)
         else:
             return LConstant.parse(parts)
 
@@ -136,7 +142,7 @@ class LConstant(Operator):
         return LConstant(self.name + fix, self.id)
 
     def replaceConstantsName(self, replace_map):
-        # assert self.name in replace_map, self.name + " not in " + str(replace_map)
+        assert self.name in replace_map, self.name + " not in " + str(replace_map)
         return LConstant(replace_map[self.name] if self.name in replace_map else self.name, self.id)
 
     def toPrefixForm(self):
@@ -214,10 +220,10 @@ class LNot(Operator):
     
 
     def __repr__(self):
-        return " (! " + str(self.operand) + ") "
+        return " ( ! " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " (! " + self.operand.SAS_repr(actionSets) + ") "
+        return " ( ! " + self.operand.SAS_repr(actionSets) + " )"
 
 
 class LAnd(Operator):
@@ -287,10 +293,10 @@ class LAnd(Operator):
         return LAnd(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " && " + str(self.right) + ")"
+        return "( " + str(self.left) + " && " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " && " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " && " + self.right.SAS_repr(actionSets) + " )"
 
 class LOr(Operator):
     @staticmethod
@@ -342,10 +348,95 @@ class LOr(Operator):
         return LOr(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return "(" + str(self.left) + " || " + str(self.right) + ")"
+        return "( " + str(self.left) + " || " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return "(" + self.left.SAS_repr(actionSets) + " || " + self.right.SAS_repr(actionSets) + ")"
+        return "( " + self.left.SAS_repr(actionSets) + " || " + self.right.SAS_repr(actionSets) + " )"
+    
+
+class LImplication(Operator):
+    @staticmethod
+    def parse(parts):
+        operatorString = parts.pop(0)
+        assert(operatorString == "->")
+        (operand_left, rest1, constants1) = Operator.parse(parts)
+        (operand_right, rest2, constants2) = Operator.parse(rest1)
+
+        return (LImplication(operand_left, operand_right), rest2, constants1 + constants2)
+
+
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def getClauses(self, clauses):
+        assert False, "Not implemented!"
+
+    def negate(self):
+        assert False, "Not implemented!"
+
+    def distribute(self):
+        assert False, "Not implemented!"
+
+    def toDNF(self):
+        assert False, "Not implemented!"
+
+    def addPostfix(self, fix):
+        return LImplication(self.left.addPostfix(fix), self.right.addPostfix(fix))
+
+    def toPrefixForm(self):
+        return " -> "  + self.left.toPrefixForm() + " " + self.right.toPrefixForm()
+
+    def replaceConstantsName(self, map):
+        return LImplication(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
+
+    def __repr__(self):
+        return "( " + str(self.left) + " -> " + str(self.right) + " )"
+
+    def SAS_repr(self, actionSets):
+        return "( " + self.left.SAS_repr(actionSets) + " -> " + self.right.SAS_repr(actionSets) + " )"
+    
+class LEquivalence(Operator):
+    @staticmethod
+    def parse(parts):
+        operatorString = parts.pop(0)
+        assert(operatorString == "<->")
+        (operand_left, rest1, constants1) = Operator.parse(parts)
+        (operand_right, rest2, constants2) = Operator.parse(rest1)
+
+        return (LEquivalence(operand_left, operand_right), rest2, constants1 + constants2)
+
+
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def getClauses(self, clauses):
+        assert False, "Not implemented!"
+
+    def negate(self):
+        assert False, "Not implemented!"
+
+    def distribute(self):
+        assert False, "Not implemented!"
+
+    def toDNF(self):
+        assert False, "Not implemented!"
+
+    def addPostfix(self, fix):
+        return LEquivalence(self.left.addPostfix(fix), self.right.addPostfix(fix))
+
+    def toPrefixForm(self):
+        return " <-> "  + self.left.toPrefixForm() + " " + self.right.toPrefixForm()
+
+    def replaceConstantsName(self, map):
+        return LEquivalence(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
+
+    def __repr__(self):
+        return "( " + str(self.left) + " <-> " + str(self.right) + " )"
+
+    def SAS_repr(self, actionSets):
+        return "( " + self.left.SAS_repr(actionSets) + " <-> " + self.right.SAS_repr(actionSets) + " )"
 
 
 class OpSometimes(Operator):
@@ -366,10 +457,10 @@ class OpSometimes(Operator):
 
     
     def __repr__(self):
-        return " <> " + str(self.operand)
+        return "( <> " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " <> " + self.operand.SAS_repr(actionSets)
+        return "( <> " + self.operand.SAS_repr(actionSets) + " )"
 
 class OpAlways(Operator):
 
@@ -388,10 +479,10 @@ class OpAlways(Operator):
         return OpAlways(self.operand.replaceConstantsName(map))
 
     def __repr__(self):
-        return " [] " + str(self.operand)
+        return "( [] " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " [] " + self.operand.SAS_repr(actionSets)
+        return "( [] " + self.operand.SAS_repr(actionSets) + " )"
 
     
 class OpNext(Operator):
@@ -411,10 +502,10 @@ class OpNext(Operator):
         return OpNext(self.operand.replaceConstantsName(map))
 
     def __repr__(self):
-        return " X " + str(self.operand)
+        return "( X " + str(self.operand) + " )"
 
     def SAS_repr(self, actionSets):
-        return " X " + self.operand.SAS_repr(actionSets)
+        return "( X " + self.operand.SAS_repr(actionSets) + " )"
 
 class OpUntil(Operator):
 
@@ -436,10 +527,10 @@ class OpUntil(Operator):
         return OpUntil(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return str(self.left) + " U " + str(self.right)
+        return "(" + str(self.left) + " U " + str(self.right) + " )"
 
     def SAS_repr(self, actionSets):
-        return self.left.SAS_repr(actionSets) + " U " + self.right.SAS_repr(actionSets)
+        return "(" + self.left.SAS_repr(actionSets) + " U " + self.right.SAS_repr(actionSets) + " )"
 
 
 class OpWeakUntil(Operator):
@@ -462,7 +553,34 @@ class OpWeakUntil(Operator):
         return OpWeakUntil(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
 
     def __repr__(self):
-        return str(self.left) + " W " + str(self.right)
+        return "(" + str(self.left) + " W " + str(self.right)  + " )"
 
     def SAS_repr(self, actionSets):
-        return self.left.SAS_repr(actionSets) + " W " + self.right.SAS_repr(actionSets)
+        return "(" + self.left.SAS_repr(actionSets) + " W " + self.right.SAS_repr(actionSets)  + " )"
+    
+
+
+class OpRelease(Operator):
+
+    @staticmethod
+    def parse(parts):
+        operatorString = parts.pop(0)
+        assert(operatorString == "R")
+        (operand_left, rest1, constants1) = Operator.parse(parts)
+        (operand_right, rest2, constants2) = Operator.parse(rest1)
+
+        return (OpRelease(operand_left, operand_right), rest2, constants1 + constants2)
+
+
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def replaceConstantsName(self, map):
+        return OpRelease(self.left.replaceConstantsName(map), self.right.replaceConstantsName(map))
+
+    def __repr__(self):
+        return "(" + str(self.left) + " R " + str(self.right) + " )"
+
+    def SAS_repr(self, actionSets):
+        return "(" + self.left.SAS_repr(actionSets) + " R " + self.right.SAS_repr(actionSets)  + " )"
