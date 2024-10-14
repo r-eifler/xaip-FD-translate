@@ -43,14 +43,14 @@ class LTLProperty(PlanProperty):
         spot_bin = os.environ.get("SPOT_BIN_PATH", "/mnt/data_server/eifler/LTL2BA/spot-2.6.3/bin/")
         formula = str(self.genericFormula)
         # print(formula)
-        output_file = self.name
+        output_file = self.name.replace(' ', '_')
         ltl2hoa_path = os.environ.get("LTL2HAO_PATH", "/mnt/data_server/eifler/ltl-mode/ltlfkit/")
         #cmd = spot_bin + "ltlfilt --from-ltlf -f '" + formula + "' | " + spot_bin + "ltl2tgba -B -D -s -C | " + spot_bin + "autfilt --remove-ap=alive -B -D -C -s --small > " + output_file
         cmd = "python3 " + ltl2hoa_path + "ltlf2hoa.py '" + formula + "' | autfilt --small -C -s --spin > " + output_file
 
         os.system(cmd)
 
-        self.automata = parseNFA(self.name)
+        self.automata = parseNFA(output_file)
         self.automata.name = self.name
 
         cmd = "rm " + self.name
