@@ -7,6 +7,7 @@ class ExplanationSetting:
         self.ltl_properties = {}
         self.g_properties = {}
 
+        self.only_use_here_specified_goals = False
         self.hard_goals = None
         self.soft_goals = None
 
