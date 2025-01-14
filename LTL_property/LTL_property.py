@@ -1,3 +1,4 @@
+import unicodedata
 from .parse_SPIN_automata import *
 from xaip.general.property import PlanProperty
 from xaip.action_sets.action import ActionSet
@@ -43,11 +44,11 @@ class LTLProperty(PlanProperty):
         spot_bin = os.environ.get("SPOT_BIN_PATH", "/mnt/data_server/eifler/LTL2BA/spot-2.6.3/bin/")
         formula = str(self.genericFormula)
         # print(formula)
-        output_file = self.name.replace(' ', '_')
+        output_file = slugify(self.name)
         ltl2hoa_path = os.environ.get("LTL2HAO_PATH", "/mnt/data_server/eifler/ltl-mode/ltlfkit/")
         #cmd = spot_bin + "ltlfilt --from-ltlf -f '" + formula + "' | " + spot_bin + "ltl2tgba -B -D -s -C | " + spot_bin + "autfilt --remove-ap=alive -B -D -C -s --small > " + output_file
         cmd = "python3 " + ltl2hoa_path + "ltlf2hoa.py '" + formula + "' | autfilt --small -C -s --spin > " + output_file
-
+        # print(cmd)
         os.system(cmd)
 
         self.automata = parseNFA(output_file)
@@ -86,3 +87,19 @@ def removeDuplicates(list):
             continue
         new_list.append(e)
     return new_list
+
+def slugify(value, allow_unicode=False):
+    """
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '-', value).strip('-_')
