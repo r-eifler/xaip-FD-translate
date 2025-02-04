@@ -70,7 +70,7 @@ class LTLProperty(PlanProperty):
             weaker = json['weaker']
         if 'stronger' in json:
             stronger = json['stronger']
-        new_property = LTLProperty(json['name'], formula, constants, weaker, stronger)
+        new_property = LTLProperty(json['_id'], formula, constants, weaker, stronger)
         for actionSets_json in json['actionSets']:
             new_property.add_action_set(ActionSet.fromJSON(actionSets_json, typeObjectMap, True))
         return new_property

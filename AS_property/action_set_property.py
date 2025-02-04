@@ -39,7 +39,7 @@ class ActionSetProperty(PlanProperty):
     @staticmethod
     def fromJSON(json, typeObjectMap):
         (formula, rest, constants) = logic_formula.parseFormula(json['formula'])
-        new_property = ActionSetProperty(json['name'], formula, constants)
+        new_property = ActionSetProperty(json['_id'], formula, constants)
         for actionSets_json in json['actionSets']:
             new_property.add_action_set(ActionSet.fromJSON(actionSets_json, typeObjectMap, False))
         return new_property

@@ -18,7 +18,7 @@ class GoalProperty(PlanProperty):
             weaker = json['weaker']
         if 'stronger' in json:
             stronger = json['stronger']
-        new_property = GoalProperty(json['name'], formula,weaker, stronger)
+        new_property = GoalProperty(json['_id'], formula,weaker, stronger)
         return new_property
     
     def getClauses(self):
