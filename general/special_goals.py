@@ -115,6 +115,19 @@ def set_goals(sas_task, EXPSET, options):
                 edges.add((sg_pair, Goal(w).get_sas_fact(sas_task, EXPSET)))
             for s in sg.stronger:
                 edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
+
+        # for testing add edges from i to i + 1 to achieve lex ordering
+        # later include odering from json input
+        for i in range(len(soft_goals) - 1):
+            a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
+            b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
+            edges.add((a,b))
+            if i % 2 == 1:
+                a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
+                b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
+                edges.add((b,a))
+
+
         
         print('------ soft goal graph ----')
         print('num edges: ' + str(len(edges)))
