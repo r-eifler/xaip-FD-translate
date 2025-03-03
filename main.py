@@ -64,6 +64,7 @@ class XPPFramework:
             for p in self.EXPSET.get_ltl_properties():
                 print(p.name)
             print("# G properties: " + str(len(self.EXPSET.get_goal_properties())))
+            print("# P properties: " + str(len(self.EXPSET.get_partial_order_properties())))
 
     def run(self):
         print("----> run XPP framework")

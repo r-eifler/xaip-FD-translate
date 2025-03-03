@@ -15,6 +15,8 @@ class ExplanationSetting:
 
         self.not_pruned_facts = []
 
+        self.partial_order = None
+
     def init_soft_goals(self):
         self.soft_goals = []
 
@@ -61,6 +63,9 @@ class ExplanationSetting:
 
     def get_goal_properties(self):
         return list(self.g_properties.values())
+    
+    def get_partial_order_properties(self):
+        return list(self.partial_order)
 
     def get_property(self, name):
         # print("get: " + name)
@@ -78,6 +83,9 @@ class ExplanationSetting:
 
     def has_soft_goals(self):
         return self.soft_goals is not None
+    
+    def has_partial_order(self):
+        return self.partial_order is not None
 
     def add_hard_goal(self, goal):
         # print("Hard goals: ")

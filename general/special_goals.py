@@ -116,16 +116,44 @@ def set_goals(sas_task, EXPSET, options):
             for s in sg.stronger:
                 edges.add((Goal(s).get_sas_fact(sas_task, EXPSET), sg_pair))
 
+        if EXPSET.has_partial_order():
+            print("has partial order")
+        
+            for goal_names in EXPSET.get_partial_order_properties():
+
+                if isinstance(goal_names, list) and len(goal_names) >= 2:
+                    # First element is higher priority, second is lower priority
+                    goal_name_higher = goal_names[0]
+                    goal_name_lower = goal_names[1]
+                    
+                    # Create Goal objects for the ordered properties
+                    goal_higher = Goal(goal_name_higher)
+                    goal_lower = Goal(goal_name_lower)
+                    
+                    # Get SAS facts for these goals
+
+                    try:
+                        fact_higher = goal_higher.get_sas_fact(sas_task, EXPSET)
+                        fact_lower = goal_lower.get_sas_fact(sas_task, EXPSET)
+                        
+                        # Add edge representing the partial order relationship
+                        edges.add((fact_higher, fact_lower))
+                        print(f"Added partial order edge: {goal_names[0]} > {goal_names[1]}")
+
+                    except Exception as e:
+                        print(f"Failed to add partial order edge for {goal_name_higher} > {goal_name_lower}: {e}")
+                
+
         # for testing add edges from i to i + 1 to achieve lex ordering
         # later include odering from json input
-        for i in range(len(soft_goals) - 1):
-            a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
-            b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
-            edges.add((a,b))
-            if i % 2 == 1:
-                a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
-                b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
-                edges.add((b,a))
+        # for i in range(len(soft_goals) - 1):
+        #     a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
+        #     b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
+        #     edges.add((a,b))
+        #     if i % 2 == 1:
+        #         a = Goal(soft_goals[i].name).get_sas_fact(sas_task, EXPSET)
+        #         b = Goal(soft_goals[i+1].name).get_sas_fact(sas_task, EXPSET)
+        #         edges.add((b,a))
 
 
         

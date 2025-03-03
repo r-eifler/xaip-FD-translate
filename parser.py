@@ -44,3 +44,6 @@ def parse(json_encoding, typeObjectMap, EXPSET):
 
     if 'not_pruned_facts' in json_encoding:
         EXPSET.not_pruned_facts = json_encoding["not_pruned_facts"]
+
+    if 'partial_order' in json_encoding:
+        EXPSET.partial_order = json_encoding["partial_order"]
