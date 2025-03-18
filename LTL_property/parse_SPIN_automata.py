@@ -38,7 +38,7 @@ def parseTransition(line, automata, source):
     return constants
 
 def parseStateName(line, automata):
-    m = re.match("[\s]*(.+):", line)
+    m = re.match(r"[\s]*(.+):", line)
     #print("State name",line)
 
     name = m.group(1)
@@ -80,21 +80,21 @@ def parseNFA(path):
         if line.startswith("never") or line.startswith("}"):
             continue
 
-        if re.match("[\s]+if", line):
+        if re.match(r"[\s]+if", line):
             constants += parseTransition(lines.pop(0).replace("\t",""), automata, source)
             continue
 
-        if re.match("[\s]+::", line):
+        if re.match(r"[\s]+::", line):
             #print("Transition",line)
             constants += parseTransition(line, automata, source)
             continue
 
-        if re.match("[\s]+fi", line):
+        if re.match(r"[\s]+fi", line):
             source = None
             continue
 
         # the skip action is interpreted as a "true" self loop 
-        if re.match("[\s]+skip", line):
+        if re.match(r"[\s]+skip", line):
             true_exp = logic_formula.LConstant("true", None)
             trans = Transition("skip", source, source, true_exp)
             automata.transitions.append(trans)

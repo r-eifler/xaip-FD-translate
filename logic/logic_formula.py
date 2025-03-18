@@ -14,12 +14,12 @@ def shuntingYard(input):
         #print("Output: ")
         #print(output)
 
-        if re.match("[a-zA-Z0-9]+", token):
+        if re.match(r"[a-zA-Z0-9]+", token):
             output.append(token)
             continue
 
-        if re.match("&&|\|\||<=>|=>|!", token):
-            while len(stack) > 0 and re.match("&&|\|\||<=>|=>|!", stack[len(stack)-1]): #TODO UND Token IST-linksassoziativ UND Praezedenz von Token IST-KLEINER-GLEICH Praezedenz von Stack-Spitze
+        if re.match(r"&&|\|\||<=>|=>|!", token):
+            while len(stack) > 0 and re.match(r"&&|\|\||<=>|=>|!", stack[len(stack)-1]): #TODO UND Token IST-linksassoziativ UND Praezedenz von Token IST-KLEINER-GLEICH Praezedenz von Stack-Spitze
                 output.append(stack.pop())
 
             stack.append(token)
