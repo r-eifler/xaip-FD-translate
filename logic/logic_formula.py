@@ -18,8 +18,8 @@ def shuntingYard(input):
             output.append(token)
             continue
 
-        if re.match("&&|\|\||<=>|=>|!", token):
-            while len(stack) > 0 and re.match("&&|\|\||<=>|=>|!", stack[len(stack)-1]): #TODO UND Token IST-linksassoziativ UND Praezedenz von Token IST-KLEINER-GLEICH Praezedenz von Stack-Spitze
+        if re.match("&&|\\|\\||<=>|=>|!", token):
+            while len(stack) > 0 and re.match("&&|\\|\\||<=>|=>|!", stack[len(stack)-1]): #TODO UND Token IST-linksassoziativ UND Praezedenz von Token IST-KLEINER-GLEICH Praezedenz von Stack-Spitze
                 output.append(stack.pop())
 
             stack.append(token)

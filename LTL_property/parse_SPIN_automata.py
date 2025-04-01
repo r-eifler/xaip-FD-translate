@@ -38,7 +38,7 @@ def parseTransition(line, automata, source):
     return constants
 
 def parseStateName(line, automata):
-    m = re.match("[\s]*(.+):", line)
+    m = re.match("[\\s]*(.+):", line)
     #print("State name",line)
 
     name = m.group(1)
